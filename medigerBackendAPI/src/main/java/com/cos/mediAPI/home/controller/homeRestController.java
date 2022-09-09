@@ -30,9 +30,15 @@ public class homeRestController {
 		String name = user.getName();
 		return name+"안녕하세요";
 	}
-	@GetMapping("/home/search")
+	@GetMapping("/home/searchByItemName")
 	public List<druglist> search(@RequestParam String itemName) {
-		List<druglist> drug= sRepository.findByItemName(itemName);
+		List<druglist> drug= sRepository.findByItemNameContaining(itemName);
 		return drug;
 	}
+	@GetMapping("/home/searchByEfcy")
+	public List<druglist> search2(@RequestParam String efcyQesitm){
+		List<druglist> drug= sRepository.findByEfcyQesitmContaining(efcyQesitm);
+		return drug;
+	}
+	
 }

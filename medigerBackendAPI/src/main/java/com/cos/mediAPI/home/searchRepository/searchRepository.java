@@ -8,6 +8,7 @@ import com.cos.mediAPI.home.mediDAO.druglist;
 
 public interface searchRepository extends JpaRepository<druglist,Long> {
 
-	List<druglist> findByItemName(String itemName);
+	List<druglist> findByItemNameContaining(String itemName);
 	
+	List<druglist> findByEfcyQesitmContaining(String efcyQesitm);
 }

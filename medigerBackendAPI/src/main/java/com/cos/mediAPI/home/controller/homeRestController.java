@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cos.mediAPI.home.searchRepository.searchRepository;
@@ -30,7 +31,7 @@ public class homeRestController {
 		return name+"안녕하세요";
 	}
 	@GetMapping("/home/search")
-	public List<druglist> search(@PathVariable String itemName) {
+	public List<druglist> search(@RequestParam String itemName) {
 		List<druglist> drug= sRepository.findByItemName(itemName);
 		return drug;
 	}

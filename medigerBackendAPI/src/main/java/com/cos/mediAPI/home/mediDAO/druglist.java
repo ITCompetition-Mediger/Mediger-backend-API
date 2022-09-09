@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor //bean생성자
 @Entity
 public class druglist {
 	@Column
@@ -47,5 +50,6 @@ public class druglist {
 	private String updateDe;
 	@Column
 	private String useMethodQesitm;
+
 
 }

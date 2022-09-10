@@ -35,9 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().mvcMatchers("/members/**","/image/**");    // /image/** 있는 모든 파일들은 시큐리티 적용을 무시한다.
        // web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());    // 정적인 리소스들에 대해서 시큐리티 적용 무시.
     }
-
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    	http.csrf().disable();
         http.authorizeRequests()
                     .anyRequest()	// 모든 요청에 대해서 허용하라.
                     .permitAll()

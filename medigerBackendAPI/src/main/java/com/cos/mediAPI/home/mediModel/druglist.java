@@ -1,4 +1,4 @@
-package com.cos.mediAPI.home.mediDAO;
+package com.cos.mediAPI.home.mediModel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,13 +23,13 @@ import lombok.Setter;
 @NoArgsConstructor //bean생성자
 @Entity
 public class druglist {
-	@Column
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String atpnQesitm;
-	@Column
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String atpnWarnQesitm;
-	@Column
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String depositMethodQesitm;
-	@Column
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String efcyQesitm;
 	@Column
 	private String entpName;
@@ -40,11 +40,11 @@ public class druglist {
 	@Column
 	private String itemName;
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String itemSeq;
+	@Column(columnDefinition = "BIGINT")
+	private Long itemSeq;
 	@Column
 	private String openDe;
-	@Column
+	@Column(columnDefinition = "MEDIUMTEXT")
 	private String seQesitm;
 	@Column
 	private String updateDe;

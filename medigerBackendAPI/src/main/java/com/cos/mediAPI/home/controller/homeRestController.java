@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cos.mediAPI.home.mediModel.Scrap;
+import com.cos.mediAPI.home.mediModel.drugSearchList;
 import com.cos.mediAPI.home.mediModel.druglist;
 import com.cos.mediAPI.home.searchRepository.ScrapRepository;
 import com.cos.mediAPI.home.searchRepository.searchRepository;
@@ -44,13 +46,18 @@ public class homeRestController {
 		return id+"안녕하세요";
 	}
 	@GetMapping("/home/searchByItemName")
-	public List<druglist> search(@RequestParam String itemName) {
-		List<druglist> drug= sRepository.findByItemNameContaining(itemName);
+	public List<drugSearchList> search(@RequestParam String itemName) {
+		List<drugSearchList> drug= sRepository.findByItemNameContaining(itemName);
+		return drug;
+	}
+	@GetMapping("/home/searchByItemName/Detail")// itemSeq로 상세보기
+	public druglist detail(@RequestParam Long itemSeq) {
+		druglist drug= sRepository.getByItemSeq(itemSeq);
 		return drug;
 	}
 	@GetMapping("/home/searchByEfcy")
-	public List<druglist> search2(@RequestParam String efcyQesitm){
-		List<druglist> drug= sRepository.findByEfcyQesitmContaining(efcyQesitm);
+	public List<drugSearchList> search2(@RequestParam String efcyQesitm){
+		List<drugSearchList> drug= sRepository.findByEfcyQesitmContaining(efcyQesitm);
 		return drug;
 	}
 	
@@ -67,7 +74,7 @@ public class homeRestController {
 		return boardList;
 	}
 	@PostMapping("/home/scrap")//스크랩추가. 현재 Postmapping으로 구현했으나, requestbody 어노테이션을 Pathvariable로 전환하여 구현도 가능.
-	public Object userScrapAdd(HttpSession httpSession, @RequestBody Long itemSeq) {
+	public Object userScrapAdd(HttpSession httpSession, @RequestParam Long itemSeq) {
 		Scrap newScrap = new Scrap();
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
@@ -79,7 +86,20 @@ public class homeRestController {
 		newScrap.setUser(use);
 		scrapRepository.save(newScrap);
 
-		return null;
+		return "스크랩 되었습니다.";
+	}
+	
+	@DeleteMapping("/user/scrap")
+	public Object userScrapRemove(HttpSession httpSession, @RequestParam Long itemSeq) {
+		Scrap deleteScrap = new Scrap();
+		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+		Long id = user.getId();
+		User use = uRepository.getById(id);
+		druglist dlist = sRepository.getByItemSeq(itemSeq);
+		deleteScrap.setDrug(dlist);
+		deleteScrap.setUser(use);
+		scrapRepository.delete(deleteScrap);
+		return "스크랩이 취소되었습니다";
 	}
 	
 }

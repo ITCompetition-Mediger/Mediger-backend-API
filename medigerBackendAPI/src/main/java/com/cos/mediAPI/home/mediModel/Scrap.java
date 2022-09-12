@@ -38,4 +38,7 @@ public class Scrap implements Serializable {
 	@JsonBackReference
 	@JoinColumn(name = "itemSeq")
 	private druglist drug;
+	
+
+	
 }

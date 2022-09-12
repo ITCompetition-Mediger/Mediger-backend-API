@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cos.mediAPI.home.homeDAO.ScrapId;
 import com.cos.mediAPI.home.mediModel.Scrap;
 import com.cos.mediAPI.home.mediModel.drugSearchList;
 import com.cos.mediAPI.home.mediModel.druglist;
@@ -24,6 +25,7 @@ import com.cos.mediAPI.login.UserRepository;
 import java.util.Optional.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -52,7 +54,7 @@ public class homeRestController {
 	}
 	@GetMapping("/home/searchByItemName/Detail")// itemSeq로 상세보기
 	public druglist detail(@RequestParam Long itemSeq) {
-		druglist drug= sRepository.getByItemSeq(itemSeq);
+		druglist drug= sRepository.findByItemSeq(itemSeq);
 		return drug;
 	}
 	@GetMapping("/home/searchByEfcy")
@@ -62,14 +64,15 @@ public class homeRestController {
 	}
 	
 	@GetMapping("/home/scrap")//스크랩 목록 보기
-	public List<druglist> scrapList(HttpSession httpSession){
+	public List<List<drugSearchList>> scrapList(HttpSession httpSession){
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
 		System.out.println(id);
 		List<Scrap> scrapList = scrapRepository.findAllByUser_id(id);
-		List<druglist> boardList = new ArrayList<>();
+		List<List<drugSearchList>> boardList = new ArrayList<>();
 		for (int i = 0; i < scrapList.size(); i++) {
-			boardList.add(scrapList.get(i).getDrug());
+			boardList.add(sRepository.getByItemSeq(scrapList.get(i).getDrug().getItemSeq()));
+			
 		}
 		return boardList;
 	}
@@ -81,7 +84,7 @@ public class homeRestController {
 		System.out.println(id);
 		System.out.println(itemSeq);
 		User use = uRepository.getById(id);
-		druglist dlist = sRepository.getByItemSeq(itemSeq);
+		druglist dlist = sRepository.findByItemSeq(itemSeq);
 		newScrap.setDrug(dlist);
 		newScrap.setUser(use);
 		scrapRepository.save(newScrap);
@@ -95,7 +98,7 @@ public class homeRestController {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
 		User use = uRepository.getById(id);
-		druglist dlist = sRepository.getByItemSeq(itemSeq);
+		druglist dlist = sRepository.findByItemSeq(itemSeq);
 		deleteScrap.setDrug(dlist);
 		deleteScrap.setUser(use);
 		scrapRepository.delete(deleteScrap);

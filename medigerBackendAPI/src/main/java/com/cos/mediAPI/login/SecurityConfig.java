@@ -38,13 +38,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http.csrf().disable();
+//    	http.csrf().disable();
         http.authorizeRequests()
                     .anyRequest()	// 모든 요청에 대해서 허용하라.
                     .permitAll()
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/")	// 로그아웃에 대해서 성공하면 "/"로 이동
+                    .logoutUrl("/")
+                    .logoutSuccessUrl("/logout")	// 로그아웃에 대해서 성공하면 "/"로 이동
+                    .deleteCookies("JESSIONID","remember-me")
                 .and()
                     .oauth2Login()
                     .defaultSuccessUrl("/login-success")

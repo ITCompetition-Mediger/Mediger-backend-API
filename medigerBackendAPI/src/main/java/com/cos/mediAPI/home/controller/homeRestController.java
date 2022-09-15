@@ -39,8 +39,10 @@ public class homeRestController {
 	searchRepository sRepository;
 	@Autowired
 	ScrapRepository scrapRepository;
-	
-	
+	@PostMapping("/logout")
+	public String logout() {
+		return "로그아웃되었습니다.";
+	}
 	@GetMapping("/home")
 	public String home(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");

@@ -14,5 +14,6 @@ public interface searchRepository extends JpaRepository<druglist,Long> {
 	List<drugSearchList> findByItemNameContaining(String itemName);
 	List<drugSearchList> findByEfcyQesitmContaining(String efcyQesitm);
 	List<drugSearchList> getByItemSeq(Long itemSeq);
+	druglist getByItemName(String itemName);
 	druglist findByItemSeq(Long itemSeq);
 }

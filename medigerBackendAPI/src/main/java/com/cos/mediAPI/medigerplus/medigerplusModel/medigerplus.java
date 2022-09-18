@@ -31,36 +31,36 @@ import lombok.NoArgsConstructor;
 @Table(name="medigerplus")
 public class medigerplus implements Serializable {
 	@Id
-	@Column
+	@Column(name = "medigerplus_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long medigerplusId;
 	
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id")//사용자 세션 id
 	private User user;
 	
 	@Column(nullable=false)
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@DateTimeFormat(pattern="yyyy-MM-dd")//시작일
 	private LocalDate startDate;
 	
 	@Column(nullable=false)
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@DateTimeFormat(pattern="yyyy-MM-dd")//종료일
 	private LocalDate lastDate;
 	
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "drug_itemSeq")
+	@JoinColumn(name = "drug_itemSeq")//알약 일련번호
 	private druglist itemSeq;
 
 	@Column(nullable=false)
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING) //식전, 식후, 식사
 	private eatTime how;
 	
-	@Column(nullable=false)
+	@Column(nullable=false) //복용 알약갯수
 	private int many;
 	
 	@Column(nullable=false)
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)// 복용시간 아침점심저녁
 	private time times;
 }

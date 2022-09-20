@@ -54,7 +54,7 @@ public class homeRestController {
 		List<drugSearchList> drug= sRepository.findByItemNameContaining(itemName);
 		return drug;
 	}
-	@GetMapping("/home/searchByItemName/Detail")// itemSeq로 상세보기
+	@GetMapping("/home/searchByItemSeq/Detail")// itemSeq로 상세보기
 	public druglist detail(@RequestParam Long itemSeq) {
 		druglist drug= sRepository.findByItemSeq(itemSeq);
 		return drug;
@@ -94,7 +94,7 @@ public class homeRestController {
 		return "스크랩 되었습니다.";
 	}
 	
-	@DeleteMapping("/user/scrap")
+	@DeleteMapping("/home/scrap")
 	public Object userScrapRemove(HttpSession httpSession, @RequestParam Long itemSeq) {
 		Scrap deleteScrap = new Scrap();
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");

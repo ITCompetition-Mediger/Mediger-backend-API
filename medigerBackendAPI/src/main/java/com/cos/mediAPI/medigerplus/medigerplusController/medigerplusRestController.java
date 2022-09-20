@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cos.mediAPI.home.mediModel.Scrap;
+import com.cos.mediAPI.home.mediModel.ScrapList;
 import com.cos.mediAPI.home.mediModel.drugSearchList;
 import com.cos.mediAPI.home.mediModel.druglist;
+import com.cos.mediAPI.home.searchRepository.ScrapRepository;
 import com.cos.mediAPI.home.searchRepository.searchRepository;
 import com.cos.mediAPI.login.SessionUser;
 import com.cos.mediAPI.login.User;
@@ -24,6 +26,9 @@ import com.cos.mediAPI.login.UserRepository;
 import com.cos.mediAPI.medigerplus.medigerplusModel.eatTime;
 import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplus;
 import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusDaily;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypage;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageDaily;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageList;
 import com.cos.mediAPI.medigerplus.medigerplusModel.time;
 import com.cos.mediAPI.medigerplus.medigerplusRepository.medigerplusRepository;
 
@@ -35,9 +40,40 @@ public class medigerplusRestController {
 	medigerplusRepository mRepository;
 	@Autowired
 	searchRepository sRepository;
+	@Autowired
+	ScrapRepository scRepository;
 
-	
-	@GetMapping("/home/medigerplus")
+	@GetMapping("/home/mypage")
+	public medigerplusMypage myPage(HttpSession httpSession) {
+		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+		String Name = user.getName();
+		Long id = user.getId();
+		List<Scrap> medigerList = scRepository.getAllByUser_id(id);
+		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
+		List<medigerplusMypageList> scList = new ArrayList<>();
+		medigerplusMypage mdpm = new medigerplusMypage();
+		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
+		for (int i =0; i<medigerList.size(); i++) {
+			medigerplusMypageList plusList = new medigerplusMypageList();
+			plusList.setItemName(medigerList.get(i).getDrug().getItemName());
+			plusList.setItemImage(medigerList.get(i).getDrug().getItemImage());
+			scList.add(plusList);
+		}
+		for (int i =0; i<medigerplus.size(); i++) {
+			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
+			daily.setTime(medigerplus.get(i).getTimes());
+			daily.setStartDate(medigerplus.get(i).getStartDate());
+			daily.setLastDate(medigerplus.get(i).getLastDate());
+			dailyList.add(daily);
+		}
+		mdpm.setUserName(Name);
+		mdpm.setDaily(dailyList);
+		mdpm.setList(scList);
+		return mdpm;
+
+	}
+	@PostMapping("/home/medigerplus")
 	public String join(HttpSession httpSession,@RequestParam  String ItemName, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate SD, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate LD, @RequestParam eatTime how, @RequestParam int many, @RequestParam time T) {
 		medigerplus mp = new medigerplus();
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
@@ -45,8 +81,12 @@ public class medigerplusRestController {
 		User use = uRepository.getById(id); 
 		mp.setUser(use);
 		druglist dl = sRepository.getByItemName(ItemName);
+		try {
 		Long medigerItemSeq=dl.getItemSeq();
-		mp.setMedigerplusId(medigerItemSeq);
+		}catch(NullPointerException e) {
+			e.printStackTrace();
+		}
+		mp.setItemSeq(dl);
 		mp.setStartDate(SD);
 		mp.setLastDate(LD);
 		mp.setHow(how);
@@ -59,10 +99,11 @@ public class medigerplusRestController {
 	public List<medigerplusDaily> daily(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
-		medigerplusDaily mpd = new medigerplusDaily();
+
 		List<medigerplus> mt =mRepository.findByUser_Id(id);
 		List<medigerplusDaily> lmd = new ArrayList<>();
 		for (int i=0; i<mt.size(); i++ ) {
+		medigerplusDaily mpd = new medigerplusDaily();
 		druglist dl =mt.get(i).getItemSeq();
 		mpd.setItemImage(dl.getItemImage());
 		mpd.setItemName(dl.getItemName());

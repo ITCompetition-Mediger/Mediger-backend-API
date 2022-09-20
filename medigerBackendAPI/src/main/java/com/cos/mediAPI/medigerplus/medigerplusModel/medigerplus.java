@@ -31,7 +31,6 @@ import lombok.NoArgsConstructor;
 @Table(name="medigerplus")
 public class medigerplus implements Serializable {
 	@Id
-	@Column(name = "medigerplus_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long medigerplusId;
 	
@@ -50,7 +49,7 @@ public class medigerplus implements Serializable {
 	
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "drug_itemSeq")//알약 일련번호
+	@JoinColumn(name = "itemSeq")//알약 일련번호
 	private druglist itemSeq;
 
 	@Column(nullable=false)

@@ -46,8 +46,8 @@ public class homeRestController {
 	@GetMapping("/home")
 	public String home(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
-		return id+"안녕하세요";
+		String Name = user.getName();
+		return Name+"안녕하세요";
 	}
 	@GetMapping("/home/searchByItemName")
 	public List<drugSearchList> search(@RequestParam String itemName) {

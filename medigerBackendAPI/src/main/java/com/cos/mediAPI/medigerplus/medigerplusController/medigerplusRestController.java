@@ -73,8 +73,26 @@ public class medigerplusRestController {
 		return mdpm;
 
 	}
-	@PostMapping("/home/medigerplus")
-	public String join(HttpSession httpSession,@RequestParam  String ItemName, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate SD, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate LD, @RequestParam eatTime how, @RequestParam int many, @RequestParam time T) {
+	@GetMapping("/home/mypage/monthly")
+	public List<medigerplusMypageDaily>monthly(HttpSession httpSession) {
+		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+		String Name = user.getName();
+		Long id = user.getId();
+		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
+		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
+		for (int i =0; i<medigerplus.size(); i++) {
+			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
+			daily.setTime(medigerplus.get(i).getTimes());
+			daily.setStartDate(medigerplus.get(i).getStartDate());
+			daily.setLastDate(medigerplus.get(i).getLastDate());
+			dailyList.add(daily);
+		}
+		return dailyList;
+		
+	}
+	@PostMapping("/home/mypage/medigerplus")
+	public String medigerplus(HttpSession httpSession,@RequestParam  String ItemName, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate SD, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate LD, @RequestParam eatTime how, @RequestParam int many, @RequestParam time T) {
 		medigerplus mp = new medigerplus();
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
@@ -95,7 +113,7 @@ public class medigerplusRestController {
 		mRepository.save(mp);
 		return "설정되었습니다";
 	}
-	@GetMapping("/home/daily")
+	@GetMapping("/home/mypage/monthly/daily")
 	public List<medigerplusDaily> daily(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		Long id = user.getId();
@@ -109,23 +127,14 @@ public class medigerplusRestController {
 		mpd.setItemName(dl.getItemName());
 		mpd.setHow(mt.get(i).getHow());
 		mpd.setMany(mt.get(i).getMany());
-		mpd.setT(mt.get(i).getTimes());
+		mpd.setWhen(mt.get(i).getTimes());
+		mpd.setLastDate(mt.get(i).getLastDate());
+		mpd.setStartDate(mt.get(i).getStartDate());
 		lmd.add(mpd);
 		}
 		return lmd;
 		
 	}
-//	@GetMapping("/home/scrap")//스크랩 목록 보기
-//	public List<List<drugSearchList>> scrapList(HttpSession httpSession){
-//		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-//		Long id = user.getId();
-//		System.out.println(id);
-//		List<Scrap> scrapList = scrapRepository.findAllByUser_id(id);
-//		List<List<drugSearchList>> boardList = new ArrayList<>();
-//		for (int i = 0; i < scrapList.size(); i++) {
-//			boardList.add(sRepository.getByItemSeq(scrapList.get(i).getDrug().getItemSeq()));
-//			
-//		}
-//		return boardList;
+
 		
 }

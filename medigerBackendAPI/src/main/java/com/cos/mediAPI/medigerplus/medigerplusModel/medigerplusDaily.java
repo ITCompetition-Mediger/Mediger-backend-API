@@ -1,5 +1,7 @@
 package com.cos.mediAPI.medigerplus.medigerplusModel;
 
+import java.time.LocalDate;
+
 import com.cos.mediAPI.login.User;
 
 import lombok.Getter;
@@ -12,6 +14,8 @@ public class medigerplusDaily {
     private String itemName;
     private eatTime how;
     private int many;
-    private time T;
+    private time when;
+    private LocalDate startDate;
+    private LocalDate LastDate;
 
 }

@@ -49,19 +49,22 @@ public class homeRestController {
 		String Name = user.getName();
 		return Name+"안녕하세요";
 	}
-	@GetMapping("/home/searchByItemName")
-	public List<drugSearchList> search(@RequestParam String itemName) {
-		List<drugSearchList> drug= sRepository.findByItemNameContaining(itemName);
+	@GetMapping("/home/search")
+	public List<drugSearchList> search(@RequestParam String type, @RequestParam String keyword) throws Exception {
+		List<drugSearchList> drug= new ArrayList<>();
+		switch(type)	{
+			case "의약품명": 
+				drug =sRepository.findByItemNameContaining(keyword);
+				break;
+			case "증상" :
+				drug= sRepository.findByEfcyQesitmContaining(keyword);
+				break;
+			}
 		return drug;
 	}
 	@GetMapping("/home/searchByItemSeq/Detail")// itemSeq로 상세보기
 	public druglist detail(@RequestParam Long itemSeq) {
 		druglist drug= sRepository.findByItemSeq(itemSeq);
-		return drug;
-	}
-	@GetMapping("/home/searchByEfcy")
-	public List<drugSearchList> search2(@RequestParam String efcyQesitm){
-		List<drugSearchList> drug= sRepository.findByEfcyQesitmContaining(efcyQesitm);
 		return drug;
 	}
 	

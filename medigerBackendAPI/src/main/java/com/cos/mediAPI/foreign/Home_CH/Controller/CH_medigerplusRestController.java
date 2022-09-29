@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +33,7 @@ import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageList;
 import com.cos.mediAPI.medigerplus.medigerplusModel.time;
 import com.cos.mediAPI.medigerplus.medigerplusRepository.medigerplusRepository;
 
+@CrossOrigin(origins="http://localhost:3000/")
 @RestController
 public class CH_medigerplusRestController {
 	@Autowired

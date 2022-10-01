@@ -13,8 +13,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import lombok.RequiredArgsConstructor;
+import com.cos.mediAPI.MedigerBackendApiApplication;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// encoder를 빈으로 등록.
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    	System.out.println("BCrypePasswordEncoder");
         return new BCryptPasswordEncoder();
     }
 
@@ -43,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable();
         http.authorizeRequests()
+        			.antMatchers("/login").permitAll() // 커스텀 로그인 페이지를 만든 경우 권한을 수동으로 모두 접근 가능하도록 변경
                     .anyRequest()	// 모든 요청에 대해서 허용하라.
                     .permitAll()
                 .and()
@@ -51,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/logout")	// 로그아웃에 대해서 성공하면 "/"로 이동
                     .deleteCookies("JESSIONID","remember-me")
                 .and()
-                    .oauth2Login()
+                    .oauth2Login().loginPage("/login") //OAuth2 로그인 설정에서 로그인 페이지 URL을 수동으로 변경
                     .defaultSuccessUrl("/login-success")
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService);	// oauth2 로그인에 성공하면, 유저 데이터를 가지고 우리가 생성한
@@ -60,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOrigin("http://localhost:3000/");
+    	System.out.println("CorsConfigure");
+        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

@@ -49,7 +49,7 @@ public class homeRestController {
 	public String home(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		String Name = user.getName();
-		return Name+"안녕하세요";
+		return Name;
 	}
 	@GetMapping("/home/search")
 	public List<drugSearchList> search(@RequestParam String type, @RequestParam String keyword) throws Exception {

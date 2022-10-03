@@ -33,7 +33,7 @@ import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageList;
 import com.cos.mediAPI.medigerplus.medigerplusModel.time;
 import com.cos.mediAPI.medigerplus.medigerplusRepository.medigerplusRepository;
 
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin(origins="*")
 @RestController
 public class EN_medigerplusRestController {
 	@Autowired

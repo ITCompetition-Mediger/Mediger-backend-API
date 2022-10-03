@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.function.*;
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin(origins="*")
 @RestController
 public class EN_HomeRestController {
 	@Autowired

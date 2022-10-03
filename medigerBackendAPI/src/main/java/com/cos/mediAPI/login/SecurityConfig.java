@@ -46,17 +46,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	http.csrf().disable();
         http.authorizeRequests()
-        			.antMatchers("/login").permitAll() // 커스텀 로그인 페이지를 만든 경우 권한을 수동으로 모두 접근 가능하도록 변경
+        			.antMatchers().permitAll() // 커스텀 로그인 페이지를 만든 경우 권한을 수동으로 모두 접근 가능하도록 변경
                     .anyRequest()	// 모든 요청에 대해서 허용하라.
                     .permitAll()
                 .and()
                     .logout()
                     .logoutUrl("/")
-                    .logoutSuccessUrl("/logout")	// 로그아웃에 대해서 성공하면 "/"로 이동
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
                     .deleteCookies("JESSIONID","remember-me")
+                    .logoutSuccessUrl("/logout").permitAll()	// 로그아웃에 대해서 성공하면 "/"로 이동
                 .and()
-                    .oauth2Login().loginPage("/login") //OAuth2 로그인 설정에서 로그인 페이지 URL을 수동으로 변경
-                    .defaultSuccessUrl("/login-success")
+                    .oauth2Login().loginPage("/login").permitAll() //OAuth2 로그인 설정에서 로그인 페이지 URL을 수동으로 변경
+                    .defaultSuccessUrl("/home")
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService);	// oauth2 로그인에 성공하면, 유저 데이터를 가지고 우리가 생성한
              	       						// customOAuth2UserService에서 처리를 하겠다. 그리고 "/login-success"로 이동하라.

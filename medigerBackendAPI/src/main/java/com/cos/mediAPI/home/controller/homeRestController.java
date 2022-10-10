@@ -3,6 +3,7 @@ package com.cos.mediAPI.home.controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,11 @@ import com.cos.mediAPI.home.searchRepository.searchRepository;
 import com.cos.mediAPI.login.SessionUser;
 import com.cos.mediAPI.login.User;
 import com.cos.mediAPI.login.UserRepository;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplus;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypage;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageDaily;
+import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageList;
+import com.cos.mediAPI.medigerplus.medigerplusRepository.medigerplusRepository;
 
 import java.util.Optional.*;
 import java.util.ArrayList;
@@ -41,16 +47,32 @@ public class homeRestController {
 	searchRepository sRepository;
 	@Autowired
 	ScrapRepository scrapRepository;
-	@PostMapping("/logout")
+	@Autowired
+	medigerplusRepository mRepository;
+	@GetMapping("/logout-success")
 	public String logout() {
 		return "로그아웃되었습니다.";
 	}
 	@GetMapping("/home")
-	public String home(HttpSession httpSession) {
+	public ArrayList home(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+		ArrayList userlist = new ArrayList<>();
+		userlist.add(user);
 		String Name = user.getName();
-		return Name;
-	}
+		Long id = user.getId();
+		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
+		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
+		for (int i =0; i<medigerplus.size(); i++) {
+			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
+			daily.setTime(medigerplus.get(i).getTimes());
+			daily.setStartDate(medigerplus.get(i).getStartDate());
+			daily.setLastDate(medigerplus.get(i).getLastDate());
+			dailyList.add(daily);
+		}
+		userlist.add(dailyList);
+		return userlist;
+	} 
 	@GetMapping("/home/search")
 	public List<drugSearchList> search(@RequestParam String type, @RequestParam String keyword) throws Exception {
 		List<drugSearchList> drug= new ArrayList<>();

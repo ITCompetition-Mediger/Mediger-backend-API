@@ -54,45 +54,62 @@ public class medigerplusRestController {
 		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
 		List<medigerplusMypageList> scList = new ArrayList<>();
 		medigerplusMypage mdpm = new medigerplusMypage();
-		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
 		for (int i =0; i<medigerList.size(); i++) {
 			medigerplusMypageList plusList = new medigerplusMypageList();
 			plusList.setItemName(medigerList.get(i).getDrug().getItemName());
 			plusList.setItemImage(medigerList.get(i).getDrug().getItemImage());
+			plusList.setItemSeq(medigerList.get(i).getDrug().getItemSeq());
 			scList.add(plusList);
 		}
-		for (int i =0; i<medigerplus.size(); i++) {
-			medigerplusMypageDaily daily = new medigerplusMypageDaily();
-			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
-			daily.setTime(medigerplus.get(i).getTimes());
-			daily.setStartDate(medigerplus.get(i).getStartDate());
-			daily.setLastDate(medigerplus.get(i).getLastDate());
-			dailyList.add(daily);
+//		for (int i =0; i<medigerplus.size(); i++) {
+//			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+//			daily.setItemName(medigerplus.get(i).getItemSeq().getItemName());
+//			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
+//			daily.setTime(medigerplus.get(i).getTimes());
+//			daily.setStartDate(medigerplus.get(i).getStartDate());
+//			daily.setLastDate(medigerplus.get(i).getLastDate());
+//			dailyList.add(daily);
+//		}
+		List<medigerplus> mt =mRepository.findByUser_Id(id);
+		List<medigerplusDaily> lmd = new ArrayList<>();
+		for (int i=0; i<mt.size(); i++ ) {
+		medigerplusDaily mpd = new medigerplusDaily();
+		druglist dl =mt.get(i).getItemSeq();
+		mpd.setItemImage(dl.getItemImage());
+		mpd.setItemName(dl.getItemName());
+		mpd.setHow(mt.get(i).getHow());
+		mpd.setMany(mt.get(i).getMany());
+		mpd.setWhen(mt.get(i).getTimes());
+		mpd.setLastDate(mt.get(i).getLastDate());
+		mpd.setStartDate(mt.get(i).getStartDate());
+		lmd.add(mpd);
 		}
 		mdpm.setUserName(Name);
-		mdpm.setDaily(dailyList);
+		mdpm.setDaily(lmd);
 		mdpm.setList(scList);
 		return mdpm;
 
 	}
-	@GetMapping("/home/mypage/monthly")
-	public List<medigerplusMypageDaily>monthly(HttpSession httpSession) {
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		String Name = user.getName();
-		Long id = user.getId();
-		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
-		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
-		for (int i =0; i<medigerplus.size(); i++) {
-			medigerplusMypageDaily daily = new medigerplusMypageDaily();
-			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
-			daily.setTime(medigerplus.get(i).getTimes());
-			daily.setStartDate(medigerplus.get(i).getStartDate());
-			daily.setLastDate(medigerplus.get(i).getLastDate());
-			dailyList.add(daily);
-		}
-		return dailyList;
-		
-	}
+//	@GetMapping("/home/mypage/monthly")
+//	public List<medigerplusMypageDaily>monthly(HttpSession httpSession) {
+//		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+//		String Name = user.getName();
+//		Long id = user.getId();
+//		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
+//		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
+//		for (int i =0; i<medigerplus.size(); i++) {
+//			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+//			daily.setItemName(medigerplus.get(i).getItemSeq().getItemName());
+//			System.out.println(daily.getItemName());
+//			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
+//			daily.setTime(medigerplus.get(i).getTimes());
+//			daily.setStartDate(medigerplus.get(i).getStartDate());
+//			daily.setLastDate(medigerplus.get(i).getLastDate());
+//			dailyList.add(daily);
+//		}
+//		return dailyList;
+//		
+//	}
 	@PostMapping("/home/mypage/medigerplus")
 	public String medigerplus(HttpSession httpSession,@RequestParam  String ItemName, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate SD, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate LD, @RequestParam eatTime how, @RequestParam int many, @RequestParam time T) {
 		medigerplus mp = new medigerplus();
@@ -115,28 +132,28 @@ public class medigerplusRestController {
 		mRepository.save(mp);
 		return "설정되었습니다";
 	}
-	@GetMapping("/home/mypage/monthly/daily")
-	public List<medigerplusDaily> daily(HttpSession httpSession) {
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
-
-		List<medigerplus> mt =mRepository.findByUser_Id(id);
-		List<medigerplusDaily> lmd = new ArrayList<>();
-		for (int i=0; i<mt.size(); i++ ) {
-		medigerplusDaily mpd = new medigerplusDaily();
-		druglist dl =mt.get(i).getItemSeq();
-		mpd.setItemImage(dl.getItemImage());
-		mpd.setItemName(dl.getItemName());
-		mpd.setHow(mt.get(i).getHow());
-		mpd.setMany(mt.get(i).getMany());
-		mpd.setWhen(mt.get(i).getTimes());
-		mpd.setLastDate(mt.get(i).getLastDate());
-		mpd.setStartDate(mt.get(i).getStartDate());
-		lmd.add(mpd);
-		}
-		return lmd;
-		
-	}
+//	@GetMapping("/home/mypage/monthly/daily")
+//	public List<medigerplusDaily> daily(HttpSession httpSession) {
+//		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+//		Long id = user.getId();
+//
+//		List<medigerplus> mt =mRepository.findByUser_Id(id);
+//		List<medigerplusDaily> lmd = new ArrayList<>();
+//		for (int i=0; i<mt.size(); i++ ) {
+//		medigerplusDaily mpd = new medigerplusDaily();
+//		druglist dl =mt.get(i).getItemSeq();
+//		mpd.setItemImage(dl.getItemImage());
+//		mpd.setItemName(dl.getItemName());
+//		mpd.setHow(mt.get(i).getHow());
+//		mpd.setMany(mt.get(i).getMany());
+//		mpd.setWhen(mt.get(i).getTimes());
+//		mpd.setLastDate(mt.get(i).getLastDate());
+//		mpd.setStartDate(mt.get(i).getStartDate());
+//		lmd.add(mpd);
+//		}
+//		return lmd;
+//		
+//	}
 
 		
 }

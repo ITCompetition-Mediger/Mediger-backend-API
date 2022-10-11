@@ -10,4 +10,5 @@ import lombok.Setter;
 public class medigerplusMypageList {
 	String itemImage;
 	String itemName;
+	Long itemSeq;
 }

@@ -64,6 +64,7 @@ public class homeRestController {
 		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
 		for (int i =0; i<medigerplus.size(); i++) {
 			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+			daily.setItemName(medigerplus.get(i).getItemSeq().getItemName());
 			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
 			daily.setTime(medigerplus.get(i).getTimes());
 			daily.setStartDate(medigerplus.get(i).getStartDate());

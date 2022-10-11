@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class medigerplusMypageDaily {
+	String itemName;
 	String itemImage;
 	time time;
 	LocalDate startDate;

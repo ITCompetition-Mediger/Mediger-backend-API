@@ -13,5 +13,5 @@ import lombok.Setter;
 public class medigerplusMypage {
 	private String userName;
 	private List<medigerplusDaily> Daily;
-	private List<druglist> List;
+	private List<druglist> scrapList;
 }

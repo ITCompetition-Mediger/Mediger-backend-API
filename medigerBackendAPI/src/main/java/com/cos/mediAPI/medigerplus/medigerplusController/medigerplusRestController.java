@@ -51,15 +51,10 @@ public class medigerplusRestController {
 		String Name = user.getName();
 		Long id = user.getId();
 		List<Scrap> medigerList = scRepository.getAllByUser_id(id);
-		List<medigerplus> medigerplus = mRepository.getByUser_Id(id);
-		List<medigerplusMypageList> scList = new ArrayList<>();
+		List<druglist> scrapList = new ArrayList<>();
 		medigerplusMypage mdpm = new medigerplusMypage();
 		for (int i =0; i<medigerList.size(); i++) {
-			medigerplusMypageList plusList = new medigerplusMypageList();
-			plusList.setItemName(medigerList.get(i).getDrug().getItemName());
-			plusList.setItemImage(medigerList.get(i).getDrug().getItemImage());
-			plusList.setItemSeq(medigerList.get(i).getDrug().getItemSeq());
-			scList.add(plusList);
+			scrapList.add(medigerList.get(i).getDrug());
 		}
 //		for (int i =0; i<medigerplus.size(); i++) {
 //			medigerplusMypageDaily daily = new medigerplusMypageDaily();
@@ -82,11 +77,12 @@ public class medigerplusRestController {
 		mpd.setWhen(mt.get(i).getTimes());
 		mpd.setLastDate(mt.get(i).getLastDate());
 		mpd.setStartDate(mt.get(i).getStartDate());
+		mpd.setMedigerDruglist(dl);
 		lmd.add(mpd);
 		}
 		mdpm.setUserName(Name);
 		mdpm.setDaily(lmd);
-		mdpm.setList(scList);
+		mdpm.setList(scrapList);
 		return mdpm;
 
 	}

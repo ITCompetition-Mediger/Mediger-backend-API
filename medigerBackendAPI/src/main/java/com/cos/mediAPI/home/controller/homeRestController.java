@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +39,7 @@ import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.function.*;
-@CrossOrigin(origins="*")
+@CrossOrigin(value = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 public class homeRestController {
 	@Autowired
@@ -90,6 +91,13 @@ public class homeRestController {
 	@GetMapping("/home/searchByItemSeq/Detail")// itemSeq로 상세보기
 	public druglist detail(@RequestParam Long itemSeq) {
 		druglist drug= sRepository.findByItemSeq(itemSeq);
+		drug.setAtpnQesitm(drug.getAtpnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setAtpnWarnQesitm(drug.getAtpnWarnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setEfcyQesitm(drug.getEfcyQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setIntrcQesitm(drug.getIntrcQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setSeQesitm(drug.getSeQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setUseMethodQesitm(drug.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setDepositMethodQesitm(drug.getDepositMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		return drug;
 	}
 	

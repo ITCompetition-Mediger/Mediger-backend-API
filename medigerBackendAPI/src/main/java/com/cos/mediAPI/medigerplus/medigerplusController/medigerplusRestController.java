@@ -54,7 +54,15 @@ public class medigerplusRestController {
 		List<druglist> scrapList = new ArrayList<>();
 		medigerplusMypage mdpm = new medigerplusMypage();
 		for (int i =0; i<medigerList.size(); i++) {
-			scrapList.add(medigerList.get(i).getDrug());
+			druglist drugList =medigerList.get(i).getDrug();
+			drugList.setAtpnQesitm(drugList.getAtpnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setAtpnWarnQesitm(drugList.getAtpnWarnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setEfcyQesitm(drugList.getEfcyQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setIntrcQesitm(drugList.getIntrcQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setSeQesitm(drugList.getSeQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setUseMethodQesitm(drugList.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			drugList.setDepositMethodQesitm(drugList.getDepositMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+			scrapList.add(drugList);
 		}
 //		for (int i =0; i<medigerplus.size(); i++) {
 //			medigerplusMypageDaily daily = new medigerplusMypageDaily();
@@ -70,6 +78,12 @@ public class medigerplusRestController {
 		for (int i=0; i<mt.size(); i++ ) {
 		medigerplusDaily mpd = new medigerplusDaily();
 		druglist dl =mt.get(i).getItemSeq();
+		dl.setAtpnQesitm(dl.getAtpnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setAtpnWarnQesitm(dl.getAtpnWarnQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setEfcyQesitm(dl.getEfcyQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setIntrcQesitm(dl.getIntrcQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setSeQesitm(dl.getSeQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setUseMethodQesitm(dl.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		mpd.setItemImage(dl.getItemImage());
 		mpd.setItemName(dl.getItemName());
 		mpd.setHow(mt.get(i).getHow());
@@ -82,7 +96,7 @@ public class medigerplusRestController {
 		}
 		mdpm.setUserName(Name);
 		mdpm.setDaily(lmd);
-		mdpm.setList(scrapList);
+		mdpm.setScrapList(scrapList);
 		return mdpm;
 
 	}

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class medigerplusMypageDaily {
+	Long id;
 	String itemName;
 	String itemImage;
 	time time;

@@ -1,17 +1,21 @@
 package com.cos.mediAPI.medigerplus.medigerplusController;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +28,7 @@ import com.cos.mediAPI.home.searchRepository.searchRepository;
 import com.cos.mediAPI.login.SessionUser;
 import com.cos.mediAPI.login.User;
 import com.cos.mediAPI.login.UserRepository;
+import com.cos.mediAPI.medigerplus.medigerplusModel.JSONMedigerBody;
 import com.cos.mediAPI.medigerplus.medigerplusModel.eatTime;
 import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplus;
 import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusDaily;
@@ -33,7 +38,7 @@ import com.cos.mediAPI.medigerplus.medigerplusModel.medigerplusMypageList;
 import com.cos.mediAPI.medigerplus.medigerplusModel.time;
 import com.cos.mediAPI.medigerplus.medigerplusRepository.medigerplusRepository;
 
-@CrossOrigin(origins="http://localhost:3000/")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class medigerplusRestController {
 	@Autowired
@@ -44,12 +49,14 @@ public class medigerplusRestController {
 	searchRepository sRepository;
 	@Autowired
 	ScrapRepository scRepository;
+	static Long id;
 
 	@GetMapping("/home/mypage")
 	public medigerplusMypage myPage(HttpSession httpSession) {
 		SessionUser user = (SessionUser) httpSession.getAttribute("user");
 		String Name = user.getName();
-		Long id = user.getId();
+
+		id = user.getId();
 		List<Scrap> medigerList = scRepository.getAllByUser_id(id);
 		List<druglist> scrapList = new ArrayList<>();
 		medigerplusMypage mdpm = new medigerplusMypage();
@@ -95,6 +102,7 @@ public class medigerplusRestController {
 		lmd.add(mpd);
 		}
 		mdpm.setUserName(Name);
+		mdpm.setId(id);
 		mdpm.setDaily(lmd);
 		mdpm.setScrapList(scrapList);
 		return mdpm;
@@ -121,26 +129,54 @@ public class medigerplusRestController {
 //		
 //	}
 	@PostMapping("/home/mypage/medigerplus")
-	public String medigerplus(HttpSession httpSession,@RequestParam  String ItemName, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate SD, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate LD, @RequestParam eatTime how, @RequestParam int many, @RequestParam time T) {
+	public void medigerplus( @RequestBody Map<String, String> MedigerBody) {
+		String ItemName =(MedigerBody.get("itemName")).toString();
+		String JsonHow = (MedigerBody.get("how")).toString();
+		int many = Integer.parseInt((MedigerBody.get("many")).toString());
+		String JsonWhen = (MedigerBody.get("when")).toString();
+		Long id = Long.parseLong(MedigerBody.get("id"));
+		time Ti;
+		eatTime how;
+		String SD = (MedigerBody.get("start").toString()).substring(0,10);
+		LocalDate StartDate = LocalDate.parse(SD, DateTimeFormatter.ISO_DATE);
+		String LD = (MedigerBody.get("last").toString()).substring(0,10);
+		LocalDate LastDate = LocalDate.parse(LD, DateTimeFormatter.ISO_DATE);
+		
+
+		System.out.println(LD);
+		if ( JsonHow == "식전 30분") {
+			how = eatTime.beforeMeal;
+		}else if(JsonHow == "식사직후"){
+			how = eatTime.Meal;
+		}else {
+			how = eatTime.afterMeal;
+		}
+//		localDate //last JSON 변수 선언
+		//start JSON 변수 선언
+		if ( JsonWhen == "아침") {
+			Ti = time.Morn;
+		}else if(JsonWhen == "점심"){
+			Ti = time.After;
+		}else {
+			Ti = time.Even;
+		}
 		medigerplus mp = new medigerplus();
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
-		User use = uRepository.getById(id); 
+		User use = uRepository.getById(id);
 		mp.setUser(use);
 		druglist dl = sRepository.getByItemName(ItemName);
 		try {
 		Long medigerItemSeq=dl.getItemSeq();
+//		
 		}catch(NullPointerException e) {
 			e.printStackTrace();
 		}
 		mp.setItemSeq(dl);
-		mp.setStartDate(SD);
-		mp.setLastDate(LD);
+		mp.setStartDate(StartDate);
+		mp.setLastDate(LastDate);
 		mp.setHow(how);
 		mp.setMany(many);
-		mp.setTimes(T);
+		mp.setTimes(Ti);
 		mRepository.save(mp);
-		return "설정되었습니다";
 	}
 //	@GetMapping("/home/mypage/monthly/daily")
 //	public List<medigerplusDaily> daily(HttpSession httpSession) {

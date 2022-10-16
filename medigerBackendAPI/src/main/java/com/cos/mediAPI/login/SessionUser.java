@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
+
 @Getter
 public class SessionUser implements Serializable {
 	private Long id;

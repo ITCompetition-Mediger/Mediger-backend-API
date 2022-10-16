@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class medigerplusMypage {
+	private Long id;
 	private String userName;
 	private List<medigerplusDaily> Daily;
 	private List<druglist> scrapList;

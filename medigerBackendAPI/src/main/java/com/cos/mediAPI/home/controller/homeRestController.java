@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.cos.mediAPI.home.homeDAO.ScrapId;
 import com.cos.mediAPI.home.mediModel.Scrap;
@@ -39,7 +41,7 @@ import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.function.*;
-@CrossOrigin(value = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class homeRestController {
 	@Autowired
@@ -50,7 +52,7 @@ public class homeRestController {
 	ScrapRepository scrapRepository;
 	@Autowired
 	medigerplusRepository mRepository;
-	@GetMapping("/logout-success")
+	@GetMapping("/logout")
 	public String logout() {
 		return "로그아웃되었습니다.";
 	}
@@ -65,6 +67,7 @@ public class homeRestController {
 		List<medigerplusMypageDaily> dailyList = new ArrayList<>();
 		for (int i =0; i<medigerplus.size(); i++) {
 			medigerplusMypageDaily daily = new medigerplusMypageDaily();
+			daily.setId(id);
 			daily.setItemName(medigerplus.get(i).getItemSeq().getItemName());
 			daily.setItemImage(medigerplus.get(i).getItemSeq().getItemImage());
 			daily.setTime(medigerplus.get(i).getTimes());
@@ -73,6 +76,7 @@ public class homeRestController {
 			dailyList.add(daily);
 		}
 		userlist.add(dailyList);
+		userlist.add(id);
 		return userlist;
 	} 
 	@GetMapping("/home/search")
@@ -101,46 +105,45 @@ public class homeRestController {
 		return drug;
 	}
 	
-	@GetMapping("/home/scrap")//스크랩 목록 보기
-	public List<List<drugSearchList>> scrapList(HttpSession httpSession){
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
-		System.out.println(id);
-		List<Scrap> scrapList = scrapRepository.findAllByUser_id(id);
-		List<List<drugSearchList>> boardList = new ArrayList<>();
-		for (int i = 0; i < scrapList.size(); i++) {
-			boardList.add(sRepository.getByItemSeq(scrapList.get(i).getDrug().getItemSeq()));
-			
-		}
-		return boardList;
-	}
+//	@GetMapping("/home/scrap")//스크랩 목록 보기
+//	public List<List<drugSearchList>> scrapList(HttpSession httpSession){
+//		SessionUser user = (SessionUser) httpSession.getAttribute("user");
+//		Long id = user.getId();
+//		System.out.println(id);
+//		List<Scrap> scrapList = scrapRepository.findAllByUser_id(id);
+//		List<List<drugSearchList>> boardList = new ArrayList<>();
+//		for (int i = 0; i < scrapList.size(); i++) {
+//			boardList.add(sRepository.getByItemSeq(scrapList.get(i).getDrug().getItemSeq()));
+//			
+//		}
+//		return boardList;
+//	}
 	@PostMapping("/home/scrap")//스크랩추가. 현재 Postmapping으로 구현했으나, requestbody 어노테이션을 Pathvariable로 전환하여 구현도 가능.
-	public Object userScrapAdd(HttpSession httpSession, @RequestParam Long itemSeq) {
+	public void userScrapAdd(@RequestBody Map<String, String> JsonitemSeq) {
+		String itemSeq =JsonitemSeq.get("ItemSeq");
+		String JsonId = JsonitemSeq.get("id");
+		Long id = Long.parseLong(JsonId);
+		Long itemSeqParse=Long.parseLong(itemSeq);
 		Scrap newScrap = new Scrap();
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
-		System.out.println(id);
-		System.out.println(itemSeq);
 		User use = uRepository.getById(id);
-		druglist dlist = sRepository.findByItemSeq(itemSeq);
+		druglist dlist = sRepository.findByItemSeq(itemSeqParse);
 		newScrap.setDrug(dlist);
 		newScrap.setUser(use);
 		scrapRepository.save(newScrap);
-
-		return "스크랩 되었습니다.";
 	}
 	
 	@DeleteMapping("/home/scrap")
-	public Object userScrapRemove(HttpSession httpSession, @RequestParam Long itemSeq) {
+	public void userScrapRemove(HttpSession httpSession, @RequestBody Map<String,String> DeleteItemSeq) {
 		Scrap deleteScrap = new Scrap();
-		SessionUser user = (SessionUser) httpSession.getAttribute("user");
-		Long id = user.getId();
+		String itemSeq = DeleteItemSeq.get("ItemSeq");
+		String JsonId = DeleteItemSeq.get("id");
+		Long id = Long.parseLong(JsonId);
+		Long itemSeqParse = Long.parseLong(itemSeq);
 		User use = uRepository.getById(id);
-		druglist dlist = sRepository.findByItemSeq(itemSeq);
+		druglist dlist = sRepository.findByItemSeq(itemSeqParse);
 		deleteScrap.setDrug(dlist);
 		deleteScrap.setUser(use);
 		scrapRepository.delete(deleteScrap);
-		return "스크랩이 취소되었습니다";
 	}
 	
 }

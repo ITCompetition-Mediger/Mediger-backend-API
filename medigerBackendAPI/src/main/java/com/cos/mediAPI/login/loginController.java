@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="http://localhost:3000")
 @RestController
 public class loginController {
 	@Autowired

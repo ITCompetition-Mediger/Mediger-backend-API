@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,8 @@ import com.cos.mediAPI.MedigerBackendApiApplication;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,9 +50,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
     	System.out.println("CorsConfigure");
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.addAllowedMethod(HttpMethod.HEAD.name());
+        configuration.addAllowedMethod(HttpMethod.GET.name());
+        configuration.addAllowedMethod(HttpMethod.POST.name());
+        configuration.addAllowedMethod(HttpMethod.PUT.name());
+        configuration.addAllowedMethod(HttpMethod.PATCH.name());
+        configuration.addAllowedMethod(HttpMethod.DELETE.name());
+        configuration.addAllowedMethod(HttpMethod.OPTIONS.name());
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -58,7 +67,8 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    	http.csrf().disable();
+        System.out.println("로그실행");
+        http.csrf().disable();
         http.authorizeRequests()
         			.antMatchers("/login").permitAll() // 커스텀 로그인 페이지를 만든 경우 권한을 수동으로 모두 접근 가능하도록 변경
                     .anyRequest()	// 모든 요청에 대해서 허용하라.
@@ -66,7 +76,7 @@ public class SecurityConfig {
                     
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/logout-success").permitAll()	// 로그아웃에 대해서 성공하면 "/"로 이동
+                    .logoutSuccessUrl("http://localhost:3000").permitAll()	// 로그아웃에 대해서 성공하면 "/"로 이동
                     .logoutUrl("/logout")
                     .clearAuthentication(true)
                     .invalidateHttpSession(true)

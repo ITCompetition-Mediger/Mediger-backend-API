@@ -126,10 +126,19 @@ public class homeRestController {
 		Long itemSeqParse=Long.parseLong(itemSeq);
 		Scrap newScrap = new Scrap();
 		User use = uRepository.getById(id);
-		druglist dlist = sRepository.findByItemSeq(itemSeqParse);
-		newScrap.setDrug(dlist);
-		newScrap.setUser(use);
-		scrapRepository.save(newScrap);
+//		List<Scrap> userScrapList = scrapRepository.findAllByUser_id(id);
+//		for(int i=0; i<userScrapList.size();i++) {
+//			if (itemSeqParse == userScrapList.get(i).getDrug().getItemSeq()) {
+//				
+//			}
+//			else {
+				druglist dlist = sRepository.findByItemSeq(itemSeqParse);
+				newScrap.setDrug(dlist);
+				newScrap.setUser(use);
+				scrapRepository.save(newScrap);
+//			}
+//		}
+		
 	}
 	
 	@DeleteMapping("/home/scrap")

@@ -144,18 +144,19 @@ public class medigerplusRestController {
 		
 
 		System.out.println(LD);
-		if ( JsonHow == "식전 30분") {
+		if ( JsonHow.equals("식전 30분")) {
 			how = eatTime.beforeMeal;
-		}else if(JsonHow == "식사직후"){
+		}else if(JsonHow.equals("식사직후")){
 			how = eatTime.Meal;
 		}else {
 			how = eatTime.afterMeal;
 		}
 //		localDate //last JSON 변수 선언
 		//start JSON 변수 선언
-		if ( JsonWhen == "아침") {
+		System.out.println(JsonWhen);
+		if ( JsonWhen.equals("아침")) {
 			Ti = time.Morn;
-		}else if(JsonWhen == "점심"){
+		}else if(JsonWhen.equals("점심")){
 			Ti = time.After;
 		}else {
 			Ti = time.Even;

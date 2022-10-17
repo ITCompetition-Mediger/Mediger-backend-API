@@ -90,7 +90,7 @@ public class medigerplusRestController {
 		dl.setEfcyQesitm(dl.getEfcyQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		dl.setIntrcQesitm(dl.getIntrcQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		dl.setSeQesitm(dl.getSeQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
-		dl.setUseMethodQesitm(dl.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		dl.setUseMethodQesitm(dl.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", "") .replaceAll("<sub>","").replaceAll("</sub>","").replaceAll("<sup>","").replaceAll("</sup>",""));
 		mpd.setItemImage(dl.getItemImage());
 		mpd.setItemName(dl.getItemName());
 		mpd.setHow(mt.get(i).getHow());
@@ -146,7 +146,7 @@ public class medigerplusRestController {
 		System.out.println(LD);
 		if ( JsonHow.equals("식전 30분")) {
 			how = eatTime.beforeMeal;
-		}else if(JsonHow.equals("식사직후")){
+		}else if(JsonHow.equals("식사 직후")){
 			how = eatTime.Meal;
 		}else {
 			how = eatTime.afterMeal;

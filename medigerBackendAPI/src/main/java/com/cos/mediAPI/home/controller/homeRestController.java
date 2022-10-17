@@ -100,7 +100,7 @@ public class homeRestController {
 		drug.setEfcyQesitm(drug.getEfcyQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		drug.setIntrcQesitm(drug.getIntrcQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		drug.setSeQesitm(drug.getSeQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
-		drug.setUseMethodQesitm(drug.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
+		drug.setUseMethodQesitm(drug.getUseMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", "") .replaceAll("<sub>","").replaceAll("</sub>","").replaceAll("<sup>","").replaceAll("</sup>",""));
 		drug.setDepositMethodQesitm(drug.getDepositMethodQesitm().replaceAll("<p>", "").replaceAll("</p>", ""));
 		return drug;
 	}
